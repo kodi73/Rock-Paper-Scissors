@@ -1,5 +1,6 @@
 let humanScore = 0;
 let computerScore = 0;
+const resultDiv = document.getElementById('result');
 
 function getComputerChoice()
 {
@@ -35,37 +36,48 @@ function playRound(humanChoice, computerChoice)
     if ((humanChoice === "rock" && computerChoice === "scissors") || (humanChoice === "paper" && computerChoice === "rock") ||
     (humanChoice == "scissors" && computerChoice === "paper"))
     {
-        console.log("Congratulations! You won.");
+        roundResult= "Congratulations! You won.";
         humanScore++;
     }
     else if (humanChoice === computerChoice)
     {
-        console.log(`Tie! Both chose ${humanChoice}`);
+        roundResult = `Tie! Both chose ${humanChoice}`;
     }
     else
     {
-        console.log(`You lose! ${computerChoice} beats ${humanChoice}`);
+        roundResult = `You lose! ${computerChoice} beats ${humanChoice}`;
         computerScore++;
     }
+    
+    return roundResult;
 };
 
 function playGame()
 {
     humanScore = 0;
     computerScore = 0;
-    for (let i = 0; i < 5; i++) 
-    {
-        playRound(getHumanChoice(), getComputerChoice());
-    }
 
-    console.log(`Final Scores:
-        You\tComputer
-        ${humanScore}\t${computerScore}
-        \n
-        `);
-    if (humanScore < computerScore) console.log("You Lost!");
-    else if (humanScore == computerScore) console.log("Tie");
-    else console.log("You Win!");
-};
-
+    const buttons = document.querySelectorAll('button');
+    buttons.forEach(button => {
+        button.addEventListener('click', () => {
+            const humanChoice = button.id; 
+            const computerChoice = getComputerChoice();
+            roundResult = playRound(humanChoice, computerChoice);
+            resultDiv.textContent = `${roundResult}
+            \nYou chose ${humanChoice}, Computer chose ${computerChoice}
+            \nScore: You: ${humanScore}, Computer: ${computerScore}`;
+            if (humanScore >= 5 || computerScore >= 5) {
+                if (humanScore > computerScore) {
+                    resultDiv.textContent = "\nYou Win the Game!";
+                } else if (humanScore < computerScore) {
+                    resultDiv.textContent = "\nYou Lose the Game!";
+                } else {
+                    resultDiv.textContent = "\nIt's a Tie!";
+                }
+                humanScore = 0; // Reset scores for a new game
+                computerScore = 0;
+            }
+        });
+    });    
+}
 playGame();
